@@ -25,7 +25,20 @@ let rec eval_expr : expr -> int result =
     if m=0
     then error "Division by zero"
     else return (n/m)
+  | Avg(es) ->
+    eval_exprs es >>= fun n ->
+    if List.length n = 0
+    then error "avg: empty sequence"
+    else return ((List.fold_left (fun acc t -> acc + t) 0 n) / (List.length n))
   | _ -> failwith "Not implemented yet!"
+and
+  eval_exprs : expr list -> (int list) result  =
+  fun es ->
+  match es with
+  | [] ->  return []
+  | h::t -> (eval_expr h) >>= fun n ->
+            (eval_exprs t) >>= fun m ->
+            return (n::m)
 
 (** [eval_prog e] evaluates program [e] *)
 let eval_prog (AProg(_,e)) =
@@ -34,6 +47,3 @@ let eval_prog (AProg(_,e)) =
 (** [interp s] parses [s] and then evaluates it *)
 let interp (e:string) : int result =
   e |> parse |> eval_prog
-
-
-
