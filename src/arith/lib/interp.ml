@@ -25,6 +25,11 @@ let rec eval_expr : expr -> int result =
     if m=0
     then error "Division by zero"
     else return (n/m)
+  | Avg(es) -> 
+    eval_exprs es >>= fun n -> 
+    if List.length n = 0
+    then error "avg: empty sequence"
+    else return ((List.fold_left (fun acc t -> acc + t) 0 n) / (List.length n))
   | _ -> failwith "Not implemented yet!"
 
 (** [eval_prog e] evaluates program [e] *)
