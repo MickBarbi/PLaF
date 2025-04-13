@@ -4,6 +4,12 @@ open Parser_plaf.Parser
     
 let g_store = Store.empty_store 20 (NumVal 0)
 
+let rec addIds fs evs =
+  match fs , evs with
+  | [] ,[] -> []
+  | ( id ,( is_mutable , _ )) : : t1 , v : : t2 -> ( id ,( is_mutable , v )) : : addIds t1 t2
+  | _ , _ -> failwith " error : lists have different sizes "
+
 let rec eval_expr : expr -> exp_val ea_result = fun e ->
   match e with
   | Int(n) -> return @@ NumVal n
@@ -97,7 +103,22 @@ let rec eval_expr : expr -> exp_val ea_result = fun e ->
     let str_store = Store.string_of_store string_of_expval g_store 
     in (print_endline (str_env^"\n"^str_store);
     error "Reached breakpoint")
+  | Record (fs) ->
+    sequence (List.map process_field fs) >>= fun evs ->
+    return (RecordVal (addIds fs evs))
+  | Proj(e, id) ->
+    failwith "not implemented"
+  | SetField(e1, id, e2) ->
+    failwith "not implemented"
+  | IsNumber(e) ->
+    failwith "not implemented"
   | _ -> failwith ("Not implemented: "^string_of_expr e)
+and
+  process field ( id,(is mutable,e)) =
+  eval_expr e > >= fun ev ->
+  if is_mutable
+  then return ( RefVal ( Store . new_ref g_store ev ))
+  else return ev
 
 let eval_prog (AProg(_,e)) =
   eval_expr e         

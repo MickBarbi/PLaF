@@ -13,10 +13,43 @@
 #  ; build_dir = In_build_dir "default"
 #  ; instrument_with = []
 #  }
-$ /home/ubuntu/.opam/default/bin/ocamlc.opt -config > /tmp/dune_6ea553_output
+$ /home/ubuntu/.opam/default/bin/ocamlc.opt -config > /tmp/dune_2ef0ee_output
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -bin-annot-occurrences -I lib/.let.objs/byte -no-alias-deps -opaque -o lib/.let.objs/byte/let.cmo -c -impl lib/let.ml-gen)
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamldep.opt -modules -impl lib/interp.ml) > _build/default/lib/.let.objs/let__Interp.impl.d
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I lib/.let.objs/byte -I lib/.let.objs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o lib/.let.objs/native/let.cmx -c -impl lib/let.ml-gen)
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamldep.opt -modules -impl test/let.ml) > _build/default/test/.let.eobjs/dune__exe__Let.impl.d
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamldep.opt -modules -impl lib/ds.ml) > _build/default/lib/.let.objs/let__Ds.impl.d
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamldep.opt -modules -intf test/let.mli) > _build/default/test/.let.eobjs/dune__exe__Let.intf.d
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -bin-annot-occurrences -I test/.let.eobjs/byte -no-alias-deps -opaque -o test/.let.eobjs/byte/dune__exe.cmo -c -impl test/.let.eobjs/dune__exe.ml-gen)
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -bin-annot-occurrences -I test/.let.eobjs/byte -no-alias-deps -opaque -open Dune__exe -o test/.let.eobjs/byte/dune__exe__Let.cmi -c -intf test/let.mli)
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -bin-annot-occurrences -I lib/.let.objs/byte -I /home/ubuntu/.opam/default/lib/menhirLib -I /home/ubuntu/.opam/default/lib/parser_plaf -no-alias-deps -opaque -open Let -o lib/.let.objs/byte/let__Ds.cmo -c -impl lib/ds.ml)
+> File "lib/ds.ml", lines 113-118, characters 27-85:
+> 113 | ...........................function
+> 114 |   | NumVal n -> "NumVal " ^ string_of_int n
+> 115 |   | BoolVal b -> "BoolVal " ^ string_of_bool b
+> 116 |   | PairVal (ev1,ev2) -> "PairVal("^string_of_expval ev1
+> 117 |                          ^","^ string_of_expval ev2^")"
+> 118 |   | TupleVal evs -> "TupleVal("^String.concat "," (List.map string_of_expval evs)^")"
+> Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+> Here is an example of a case that is not matched:
+> (ListVal _|TreeVal _)
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I test/.let.eobjs/byte -I test/.let.eobjs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o test/.let.eobjs/native/dune__exe.cmx -c -impl test/.let.eobjs/dune__exe.ml-gen)
 $ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -bin-annot-occurrences -I lib/.let.objs/byte -I /home/ubuntu/.opam/default/lib/menhirLib -I /home/ubuntu/.opam/default/lib/parser_plaf -no-alias-deps -opaque -open Let -o lib/.let.objs/byte/let__Interp.cmo -c -impl lib/interp.ml)
 > File "lib/interp.ml", line 1, characters 5-20:
 > 1 | open Parser_plaf.Ast
 >          ^^^^^^^^^^^^^^^
 > Error: Unbound module Parser_plaf
 [2]
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I test/.let.eobjs/byte -I test/.let.eobjs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o test/.let.eobjs/native/dune__exe__Let.cmx -c -impl test/let.ml)
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I lib/.let.objs/byte -I lib/.let.objs/native -I /home/ubuntu/.opam/default/lib/menhirLib -I /home/ubuntu/.opam/default/lib/parser_plaf -intf-suffix .ml -no-alias-deps -opaque -open Let -o lib/.let.objs/native/let__Ds.cmx -c -impl lib/ds.ml)
+> File "lib/ds.ml", lines 113-118, characters 27-85:
+> 113 | ...........................function
+> 114 |   | NumVal n -> "NumVal " ^ string_of_int n
+> 115 |   | BoolVal b -> "BoolVal " ^ string_of_bool b
+> 116 |   | PairVal (ev1,ev2) -> "PairVal("^string_of_expval ev1
+> 117 |                          ^","^ string_of_expval ev2^")"
+> 118 |   | TupleVal evs -> "TupleVal("^String.concat "," (List.map string_of_expval evs)^")"
+> Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+> Here is an example of a case that is not matched:
+> (ListVal _|TreeVal _)
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -o test/let.exe test/.let.eobjs/native/dune__exe.cmx test/.let.eobjs/native/dune__exe__Let.cmx)

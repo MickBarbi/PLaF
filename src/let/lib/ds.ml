@@ -11,6 +11,7 @@ type exp_val =
   | TupleVal of exp_val list
   | ListVal of exp_val list
   | TreeVal of exp_val tree
+  | RecordVal of (string * (bool * exp_val)) list
 type env =
   | EmptyEnv
   | ExtendEnv of string*exp_val*env
