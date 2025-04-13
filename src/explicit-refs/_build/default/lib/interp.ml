@@ -1,7 +1,7 @@
 open Ds
 open Parser_plaf.Ast
 open Parser_plaf.Parser
-
+    
 let g_store = Store.empty_store 20 (NumVal 0)
 
 let rec addIds fs evs =
@@ -107,25 +107,14 @@ let rec eval_expr : expr -> exp_val ea_result = fun e ->
     sequence (List.map process_field fs) >>= fun evs ->
     return (RecordVal (addIds fs evs))
   | Proj(e, id) ->
-    eval_expr e >>= fun n ->
-      (match n with
-      | RecordVal(fields) -> 
-        let rec lookup fields ->
-          match fields with
-          | [] -> error ("field not found")
-          | (field_id, (is_mutable, field_val)) :: rest ->
-            if field_id = id 
-            then return field_val
-            else lookup rest
-        in lookup fields
-      | _ -> error "not a RecordVal")
+    failwith "not implemented"
   | SetField(e1, id, e2) ->
     failwith "not implemented"
   | IsNumber(e) ->
     failwith "not implemented"
   | _ -> failwith ("Not implemented: "^string_of_expr e)
 and
-  process field ( id,(is_mutable,e)) =
+  process field ( id,(is mutable,e)) =
   eval_expr e > >= fun ev ->
   if is_mutable
   then return ( RefVal ( Store . new_ref g_store ev ))
@@ -139,11 +128,5 @@ let interp (s:string) : exp_val result =
   let c = s |> parse |> eval_prog
   in run c
 
-(* Interpret an expression read from a file with optional extension .sool *)
-let interpf (s:string) : exp_val result = 
-  let s = String.trim s      (* remove leading and trailing spaces *)
-  in let file_name =    (* allow rec to be optional *)
-       match String.index_opt s '.' with None -> s^".exr" | _ -> s
-  in
-  interp @@ read_file file_name
+
 

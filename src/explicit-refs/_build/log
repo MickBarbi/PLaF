@@ -1,0 +1,33 @@
+# dune build
+# OCAMLPARAM: unset
+# Shared cache: enabled-except-user-rules
+# Shared cache location: /home/ubuntu/.cache/dune/db
+# Workspace root: /home/ubuntu/Desktop/PLaF/src/explicit-refs
+# Auto-detected concurrency: 8
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Dev
+#  ; merlin = true
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; instrument_with = []
+#  }
+$ /home/ubuntu/.opam/default/bin/ocamlc.opt -config > /tmp/dune_dc5856_output
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -bin-annot-occurrences -I lib/.explicit_refs.objs/byte -no-alias-deps -opaque -o lib/.explicit_refs.objs/byte/explicit_refs.cmo -c -impl lib/explicit_refs.ml-gen)
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamldep.opt -modules -impl lib/store.ml) > _build/default/lib/.explicit_refs.objs/explicit_refs__Store.impl.d
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I lib/.explicit_refs.objs/byte -I lib/.explicit_refs.objs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o lib/.explicit_refs.objs/native/explicit_refs.cmx -c -impl lib/explicit_refs.ml-gen)
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamldep.opt -modules -impl lib/interp.ml) > _build/default/lib/.explicit_refs.objs/explicit_refs__Interp.impl.d
+> File "lib/interp.ml", line 10, characters 30-31:
+> 10 |   | ( id ,( is_mutable , _ )) : : t1 , v : : t2 -> ( id ,( is_mutable , v )) : : addIds t1 t2
+>                                    ^
+> Error: Syntax error
+[2]
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamldep.opt -modules -intf lib/store.mli) > _build/default/lib/.explicit_refs.objs/explicit_refs__Store.intf.d
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamldep.opt -modules -impl lib/ds.ml) > _build/default/lib/.explicit_refs.objs/explicit_refs__Ds.impl.d
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -bin-annot-occurrences -I lib/.explicit_refs.objs/byte -I /home/ubuntu/.opam/default/lib/menhirLib -I /home/ubuntu/.opam/default/lib/parser_plaf -no-alias-deps -opaque -open Explicit_refs -o lib/.explicit_refs.objs/byte/explicit_refs__Ds.cmo -c -impl lib/ds.ml)
+> File "lib/ds.ml", line 2, characters 5-20:
+> 2 | open Parser_plaf.Ast
+>          ^^^^^^^^^^^^^^^
+> Error: Unbound module Parser_plaf
+[2]
