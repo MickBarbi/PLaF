@@ -9,7 +9,16 @@ letrec add_last_helper(nd) = proc (key) {
 	else ((add_last_helper nd.next) key)
 } 
 in
-let add_last = (* implement *)
+let add_last = proc (l) {
+  proc (x) {
+    begin
+      if number?(l.head)
+      then l.head <= {data <= x; next <= 0}
+      else ((add_last_helper l.head) x);
+      l.length <= l.length + 1
+    end
+  }
+}
 in
 begin
   ((add_last l1) 2);

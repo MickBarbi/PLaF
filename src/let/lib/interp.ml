@@ -58,9 +58,9 @@ let rec eval_expr : expr -> exp_val ea_result =
   | IsEmpty ( e ) ->
     eval_expr e >>= fun ev ->
     (match ev with
-    | TreeVal Empty -> return (BoolVal True)
-    | TreeVal _ -> return (BoolVal False)
-    | _ -> Error "Improper input, IsEmpty requires a tree")
+    | TreeVal Empty -> return (BoolVal true)
+    | TreeVal _ -> return (BoolVal false)
+    | _ -> failwith "Improper input, IsEmpty requires a tree")
   | EmptyTree ( _t ) ->
     return (TreeVal Empty)
   | Node ( e1 , e2 , e3 ) ->
@@ -111,8 +111,8 @@ and
   fun es ->
     match es with
     | [] -> return []
-    | h :: t -> eval_expr h > >= fun i ->
-      eval_exprs t > >= fun l ->
+    | h :: t -> eval_expr h >>= fun i ->
+      eval_exprs t >>= fun l ->
         return ( i :: l )
 
 (** [eval_prog e] evaluates program [e] *)

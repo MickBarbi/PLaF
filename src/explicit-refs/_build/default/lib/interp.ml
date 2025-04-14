@@ -1,14 +1,15 @@
-open Ds
 open Parser_plaf.Ast
 open Parser_plaf.Parser
+open Ds
+
 
 let g_store = Store.empty_store 20 (NumVal 0)
 
 let rec addIds fs evs =
   match fs , evs with
   | [] ,[] -> []
-  | (id,(is_mutable, _ )) :: t1 , v :: t2 -> ( id ,( is_mutable , v )) :: addIds t1 t2
-  | _ , _ -> failwith " error : lists have different sizes "
+  | (id,(is_mutable, _))::t1, v::t2 -> (id, (is_mutable, v))::addIds t1 t2
+  | _, _ -> failwith "error : lists have different sizes"
 
 let rec eval_expr : expr -> exp_val ea_result = fun e ->
   match e with
@@ -103,6 +104,11 @@ let rec eval_expr : expr -> exp_val ea_result = fun e ->
     let str_store = Store.string_of_store string_of_expval g_store 
     in (print_endline (str_env^"\n"^str_store);
     error "Reached breakpoint")
+  | IsNumber(e) ->
+    eval_expr e >>= fun n ->
+      match n with
+      | NumVal _ -> return @@ BoolVal true
+      | _ -> return @@ BoolVal false
   | Record (fs) ->
     sequence (List.map process_field fs) >>= fun evs ->
     return (RecordVal (addIds fs evs))
@@ -121,7 +127,7 @@ let rec eval_expr : expr -> exp_val ea_result = fun e ->
       | _ -> error "not a RecordVal")
   | SetField(e1, id, e2) ->
     eval_expr e >>= fun r ->
-      match n with
+      match r with
       | RecordVal(fields) ->
         eval_expr e2 >>= fun new_val ->
           let rec update fields =
@@ -140,14 +146,9 @@ let rec eval_expr : expr -> exp_val ea_result = fun e ->
               else update rest
           in update fields
       | _ -> error "not a RecordVal"
-  | IsNumber(e) ->
-    eval_expr e >>= fun n ->
-      match n with
-      | NumVal _ -> return (BoolVal true)
-      | _ -> return (BoolVal false)
   | _ -> failwith ("Not implemented: "^string_of_expr e)
 and
-  process field ( id,(is_mutable,e)) =
+  process_field (id, (is_mutable,e)) =
   eval_expr e >>= fun ev ->
   if is_mutable
   then return ( RefVal ( Store . new_ref g_store ev ))

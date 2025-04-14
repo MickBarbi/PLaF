@@ -1,3 +1,4 @@
+(*No partner*)
 open Parser_plaf.Ast
 open Parser_plaf.Parser
 open Ds
@@ -57,9 +58,9 @@ let rec eval_expr : expr -> exp_val ea_result =
   | IsEmpty ( e ) ->
     eval_expr e >>= fun ev ->
     (match ev with
-    | TreeVal Empty -> return (BoolVal True)
-    | TreeVal _ -> return (BoolVal False)
-    | _ -> Error "Improper input, IsEmpty requires a tree")
+    | TreeVal Empty -> return (BoolVal true)
+    | TreeVal _ -> return (BoolVal false)
+    | _ -> failwith "Improper input, IsEmpty requires a tree")
   | EmptyTree ( _t ) ->
     return (TreeVal Empty)
   | Node ( e1 , e2 , e3 ) ->
@@ -68,7 +69,7 @@ let rec eval_expr : expr -> exp_val ea_result =
     eval_expr e3 >>= fun n3 ->
     (match (n2, n3) with
     | (TreeVal t1, TreeVal t2) -> return (TreeVal (Node(n1, n2, n3)))
-    | _ -> Error "2nd and 3rd arguments must be value tree values, Empty or a tree")
+    | _ -> Error "2nd and 3rd arguments must be value tree values, Empty or Node")
   | CaseT ( e1 , e2 , id1 , id2 , id3 , e3 ) ->
     eval_expr e1 >>= fun ev ->
     (match ev with
@@ -76,8 +77,43 @@ let rec eval_expr : expr -> exp_val ea_result =
     | TreeVal (Node(v, left, right)) ->
       extend_env_list [id1; id2; id3] [v; TreeVal left; TreeVal right] >>+
       eval_expr e3
-    | _ -> error "Expected a tree!")
+    | _ -> error "invalid input, expected tree")
+  | Record (fs) ->
+    let rec eval_fields fields env =
+      match fields with
+      | [] -> return []
+      | (fname, e) :: t ->
+          eval_expr e env >>= fun v ->
+          eval_fields t env >>= fun t_vals ->
+          return ((fname, (false, v)) :: t_vals)
+    in
+    eval_fields fs env >>= fun field_vals ->
+    let rec check_duplicates = function
+      | [] -> true
+      | (fname, _) :: rest -> 
+          if List.exists (fun (fname', _) -> fname' = fname) rest then false
+          else check_duplicates rest
+    in
+    if check_duplicates field_vals
+      then return (RecordVal field_vals)
+      else error "Record: Duplicate fields"
+  | Proj (e, id) ->
+    eval_expr e env >>= fun v ->
+    (match v with
+    | RecordVal fields ->
+      (match List.assoc_opt id fields with
+      | Some (_, value) -> return value
+      | _ -> error "Proj: field does not exist")
+    | _ -> error "Expected a record")
   | _ -> failwith "Not implemented yet!"
+and
+  eval_exprs : expr list -> ( exp_val list ) ea_result =
+  fun es ->
+    match es with
+    | [] -> return []
+    | h :: t -> eval_expr h >>= fun i ->
+      eval_exprs t >>= fun l ->
+        return ( i :: l )
 
 (** [eval_prog e] evaluates program [e] *)
 let eval_prog (AProg(_,e)) =
