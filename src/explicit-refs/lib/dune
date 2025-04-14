@@ -6,7 +6,7 @@
  (libraries parser_plaf)
  (public_name explicit_refs) ; required for generating documentation
  (synopsis "Interpreter for EXPLICIT_REFS")
- ;; (wrapped      false) ; true by default
+ ;;(wrapped      false) ; true by default
  )
 
 ; the next line avoids warnings from stopping the build
