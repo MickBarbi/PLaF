@@ -104,11 +104,6 @@ let rec eval_expr : expr -> exp_val ea_result = fun e ->
     let str_store = Store.string_of_store string_of_expval g_store 
     in (print_endline (str_env^"\n"^str_store);
     error "Reached breakpoint")
-  | IsNumber(e) ->
-    eval_expr e >>= fun n ->
-      match n with
-      | NumVal _ -> return @@ BoolVal true
-      | _ -> return @@ BoolVal false
   | Record (fs) ->
     sequence (List.map process_field fs) >>= fun evs ->
     return (RecordVal (addIds fs evs))
@@ -118,7 +113,7 @@ let rec eval_expr : expr -> exp_val ea_result = fun e ->
       | RecordVal(fields) -> 
         let rec lookup fields =
           match fields with
-          | [] -> error ("field not found")
+          | [] -> failwith "field not found"
           | (field_id, (is_mutable, field_val))::rest ->
             if field_id = id 
             then return field_val
@@ -126,7 +121,7 @@ let rec eval_expr : expr -> exp_val ea_result = fun e ->
         in lookup fields
       | _ -> error "not a RecordVal")
   | SetField(e1, id, e2) ->
-    eval_expr e >>= fun r ->
+    eval_expr e1 >>= fun r ->
       match r with
       | RecordVal(fields) ->
         eval_expr e2 >>= fun new_val ->
@@ -146,12 +141,17 @@ let rec eval_expr : expr -> exp_val ea_result = fun e ->
               else update rest
           in update fields
       | _ -> error "not a RecordVal"
+  | IsNumber(e) ->
+    eval_expr e >>= fun n ->
+      match n with
+      | NumVal _ -> return @@ BoolVal true
+      | _ -> return @@ BoolVal false
   | _ -> failwith ("Not implemented: "^string_of_expr e)
 and
   process_field (id, (is_mutable,e)) =
   eval_expr e >>= fun ev ->
   if is_mutable
-  then return ( RefVal ( Store . new_ref g_store ev ))
+  then return (RefVal (Store.new_ref g_store ev))
   else return ev
 
 let eval_prog (AProg(_,e)) =
